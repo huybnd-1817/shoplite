@@ -1,0 +1,310 @@
+/* ─── Web font ──────────────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ─── Reset ─────────────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+ul { list-style: none; }
+img { max-width: 100%; display: block; }
+button { cursor: pointer; font: inherit; border: none; background: none; }
+a { color: inherit; text-decoration: none; }
+
+/* ─── Tokens ─────────────────────────────────────────────────────────────────  */
+:root {
+  --color-primary:  #4a6cf7;
+  --color-surface:  #ffffff;
+  --color-bg:       #f5f6fa;
+  --color-text:     #1a1a2e;
+  --color-muted:    #6b7280;
+  --color-border:   #e5e7eb;
+  --color-accent:   #ef4444;
+  --radius:         10px;
+  --shadow-sm:      0 1px 4px rgba(0,0,0,.08);
+  --shadow-hover:   0 6px 20px rgba(74,108,247,.18);
+  --font:           'Inter', system-ui, sans-serif;
+}
+
+/* ─── Base ───────────────────────────────────────────────────────────────────  */
+body {
+  font-family: var(--font);
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+/* ─── Header ─────────────────────────────────────────────────────────────────  */
+.site-header {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow-sm);
+}
+
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.logo {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: -.5px;
+  white-space: nowrap;
+}
+
+.search-form {
+  flex: 1;
+  max-width: 480px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 24px;
+  overflow: hidden;
+  background: var(--color-bg);
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.search-form:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(74,108,247,.15);
+}
+
+.search-form input[type="search"] {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 9px 16px;
+  font-size: .95rem;
+  color: var(--color-text);
+  outline: none;
+}
+
+.search-form button {
+  padding: 8px 14px;
+  color: var(--color-muted);
+  display: grid;
+  place-items: center;
+  transition: color .2s;
+}
+
+.search-form button:hover { color: var(--color-primary); }
+
+.cart-link {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: var(--color-text);
+  transition: background .2s;
+  margin-left: auto;
+}
+
+.cart-link:hover { background: var(--color-bg); }
+
+.cart-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: var(--color-accent);
+  color: #fff;
+  font-size: .65rem;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  padding: 0 4px;
+  line-height: 1;
+  border: 2px solid var(--color-surface);
+}
+
+/* ─── Main ───────────────────────────────────────────────────────────────────  */
+main { flex: 1; }
+
+.product-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+.product-section h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 28px;
+  color: var(--color-text);
+}
+
+/* ─── Product grid ───────────────────────────────────────────────────────────  */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 24px;
+}
+
+/* ── Specificity demo: 5 rules targeting .product-card / article ───────────── *
+ *
+ *  Specificity ladder (low → high):
+ *
+ *  1. article            (0,0,1)  — tag selector
+ *  2. [data-category]    (0,1,0)  — attribute selector
+ *  3. .product-card      (0,1,0)  — class selector  (same as attr, order wins)
+ *  4. .product-card:nth-child(odd) (0,2,0) — class + pseudo-class
+ *  5. .product-card:hover (0,2,0) — class + pseudo-class  (order > #4)
+ *  6. #featured-card     (1,0,0)  — id selector  (beats all above)
+ *
+ * ─────────────────────────────────────────────────────────────────────────── */
+
+/* 1. Tag — paints every article with a shared border */
+article {
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+/* 2. Attribute — anything with a data-category attribute gets a shadow */
+[data-category] {
+  box-shadow: var(--shadow-sm);
+}
+
+/* 3. Class — full card layout, overrides the tag's bare border-radius */
+.product-card {
+  background: var(--color-surface);
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform .2s, box-shadow .2s;
+}
+
+/* 4. Pseudo :nth-child(odd) — alternating background tint on odd cards */
+.product-card:nth-child(odd) {
+  background: #fafbff;
+}
+
+/* 5. Pseudo :hover — lift + deeper shadow on hover */
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--color-primary);
+}
+
+/* 6. ID — featured card gets a gold border, beating all class/tag rules */
+#featured-card {
+  border-color: var(--color-primary);
+  border-width: 2px;
+  background: #f0f4ff;
+}
+
+/* ─── Card internals ─────────────────────────────────────────────────────────  */
+.card-image-wrap {
+  overflow: hidden;
+  aspect-ratio: 4/3;
+  background: var(--color-bg);
+}
+
+.card-image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .3s;
+}
+
+.product-card:hover .card-image-wrap img {
+  transform: scale(1.04);
+}
+
+.product-title {
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 14px 16px 4px;
+  line-height: 1.4;
+}
+
+.product-price {
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  padding: 0 16px;
+}
+
+.btn-add-cart {
+  margin: 12px 16px 16px;
+  padding: 9px 0;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: .875rem;
+  font-weight: 600;
+  border-radius: 6px;
+  text-align: center;
+  transition: opacity .2s;
+}
+
+.btn-add-cart:hover { opacity: .85; }
+
+/* ─── Footer ─────────────────────────────────────────────────────────────────  */
+.site-footer {
+  background: var(--color-text);
+  color: #c9ccd6;
+  padding: 32px 24px;
+  margin-top: auto;
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 32px;
+}
+
+.footer-brand {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #fff;
+}
+
+.footer-tagline {
+  font-size: .85rem;
+  flex: 1 1 100%;
+  margin-top: -4px;
+}
+
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+  margin-top: 8px;
+}
+
+.footer-links a {
+  font-size: .875rem;
+  color: #9ca3af;
+  transition: color .2s;
+}
+
+.footer-links a:hover { color: #fff; }
