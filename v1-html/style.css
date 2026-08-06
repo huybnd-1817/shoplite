@@ -1,310 +1,324 @@
 /* ─── Web font ──────────────────────────────────────────────────────────────── */
+/* Tải font Inter từ Google Fonts với các độ đậm 400/500/600/700 */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 /* ─── Reset ─────────────────────────────────────────────────────────────────── */
+/* Áp dụng cho mọi phần tử, kể cả pseudo-element ::before và ::after */
 *, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+  box-sizing: border-box; /* padding/border tính vào width, không làm to thêm phần tử */
+  margin: 0;              /* xóa margin mặc định của trình duyệt */
+  padding: 0;             /* xóa padding mặc định của trình duyệt */
 }
 
-ul { list-style: none; }
-img { max-width: 100%; display: block; }
-button { cursor: pointer; font: inherit; border: none; background: none; }
-a { color: inherit; text-decoration: none; }
+ul { list-style: none; }                                  /* bỏ dấu chấm đầu dòng của danh sách */
+img { max-width: 100%; display: block; }                  /* ảnh không tràn khung cha; block xóa khoảng trắng thừa bên dưới */
+button { cursor: pointer; font: inherit; border: none; background: none; } /* nút kế thừa font của cha, bỏ viền và nền mặc định */
+a { color: inherit; text-decoration: none; }              /* link kế thừa màu chữ, bỏ gạch chân */
 
 /* ─── Tokens ─────────────────────────────────────────────────────────────────  */
+/* Biến CSS toàn cục — định nghĩa một lần, dùng ở mọi nơi */
 :root {
-  --color-primary:  #4a6cf7;
-  --color-surface:  #ffffff;
-  --color-bg:       #f5f6fa;
-  --color-text:     #1a1a2e;
-  --color-muted:    #6b7280;
-  --color-border:   #e5e7eb;
-  --color-accent:   #ef4444;
-  --radius:         10px;
-  --shadow-sm:      0 1px 4px rgba(0,0,0,.08);
-  --shadow-hover:   0 6px 20px rgba(74,108,247,.18);
-  --font:           'Inter', system-ui, sans-serif;
+  --color-primary:  #4a6cf7; /* màu chủ đạo (xanh dương) */
+  --color-surface:  #ffffff; /* màu nền thẻ / header */
+  --color-bg:       #f5f6fa; /* màu nền trang */
+  --color-text:     #1a1a2e; /* màu chữ chính */
+  --color-muted:    #6b7280; /* màu chữ phụ / mờ */
+  --color-border:   #e5e7eb; /* màu đường viền */
+  --color-accent:   #ef4444; /* màu nhấn (đỏ) dùng cho badge giỏ hàng */
+  --radius:         10px;    /* bo góc dùng chung */
+  --shadow-sm:      0 1px 4px rgba(0,0,0,.08);          /* bóng nhẹ (offset-x | offset-y | blur-radius | màu bóng) */
+  --shadow-hover:   0 6px 20px rgba(74,108,247,.18);    /* bóng khi hover */
+  --font:           'Inter', system-ui, sans-serif;      /* font ưu tiên: Inter → font hệ thống → sans-serif */
 }
 
 /* ─── Base ───────────────────────────────────────────────────────────────────  */
 body {
-  font-family: var(--font);
-  background: var(--color-bg);
-  color: var(--color-text);
-  line-height: 1.6;
-  min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
+  font-family: var(--font);      /* dùng biến font đã định nghĩa */
+  background: var(--color-bg);   /* nền xám nhạt cho toàn trang */
+  color: var(--color-text);      /* màu chữ mặc định */
+  line-height: 1.6;              /* khoảng cách giữa các dòng chữ */
+  min-height: 100dvh;            /* body chiếm ít nhất toàn chiều cao viewport */
+  display: flex;                 /* dùng flexbox để đẩy footer xuống đáy */
+  flex-direction: column;        /* xếp các con theo chiều dọc */
 }
 
+/* Ẩn nội dung khỏi màn hình nhưng vẫn cho screen reader đọc được.
+   KHÔNG dùng display:none hay visibility:hidden vì screen reader sẽ bỏ qua hoàn toàn.
+   Dùng cho text mô tả icon, label ẩn, heading chỉ dành cho accessibility. */
 .sr-only {
-  position: absolute; width: 1px; height: 1px;
-  padding: 0; margin: -1px; overflow: hidden;
-  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  position: absolute;    /* tách khỏi luồng bố cục, không chiếm chỗ */
+  width: 1px;            /* thu nhỏ về 1px thay vì 0 — một số screen reader bỏ qua phần tử có width:0 */
+  height: 1px;
+  padding: 0;            /* đảm bảo không có kích thước thực */
+  margin: -1px;          /* kéo ra ngoài viewport, tránh gây ra thanh cuộn */
+  overflow: hidden;      /* cắt nội dung tràn ra ngoài vùng 1×1px */
+  clip: rect(0,0,0,0);   /* cắt vùng hiển thị về 0 (hỗ trợ trình duyệt cũ) */
+  white-space: nowrap;   /* không xuống dòng — tránh tạo thêm chiều cao */
+  border: 0;             /* bỏ viền */
 }
 
 /* ─── Header ─────────────────────────────────────────────────────────────────  */
 .site-header {
-  background: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  box-shadow: var(--shadow-sm);
+  background: var(--color-surface); /* nền trắng */
+  border-bottom: 1px solid var(--color-border); /* đường kẻ dưới header */
+  position: sticky;  /* header dính trên cùng khi cuộn */
+  top: 0;            /* dính vào mép trên viewport */
+  z-index: 100;      /* nằm trên các phần tử khác */
+  box-shadow: var(--shadow-sm); /* bóng nhẹ tạo chiều sâu */
 }
 
 .header-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px;
-  height: 64px;
-  display: flex;
-  align-items: center;
-  gap: 24px;
+  max-width: 1200px; /* giới hạn chiều rộng nội dung */
+  margin: 0 auto;    /* căn giữa theo chiều ngang (trên/dưới | trái/phải) */
+  padding: 0 24px;   /* khoảng cách hai bên */
+  height: 64px;      /* chiều cao cố định */
+  display: flex;     /* xếp logo + search + cart theo hàng ngang */
+  align-items: center; /* căn giữa theo chiều dọc */
+  gap: 24px;         /* khoảng cách giữa các con */
 }
 
 .logo {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--color-primary);
-  letter-spacing: -.5px;
-  white-space: nowrap;
+  font-size: 1.4rem;           /* cỡ chữ lớn */
+  font-weight: 700;            /* chữ đậm */
+  color: var(--color-primary); /* màu xanh chủ đạo */
+  letter-spacing: -.5px;       /* thu hẹp khoảng cách chữ một chút */
+  white-space: nowrap;         /* không xuống dòng */
 }
 
 .search-form {
-  flex: 1;
-  max-width: 480px;
-  display: flex;
-  align-items: center;
-  gap: 0;
-  border: 1px solid var(--color-border);
-  border-radius: 24px;
-  overflow: hidden;
-  background: var(--color-bg);
-  transition: border-color .2s, box-shadow .2s;
+  flex: 1;                             /* chiếm hết không gian còn lại */
+  max-width: 480px;                    /* nhưng không quá 480px */
+  display: flex;                       /* input + button nằm cùng hàng */
+  align-items: center;                 /* căn giữa dọc */
+  gap: 0;                              /* không có khoảng cách giữa input và button */
+  border: 1px solid var(--color-border); /* viền xung quanh cả form */
+  border-radius: 24px;                 /* bo tròn kiểu pill */
+  overflow: hidden;                    /* cắt các góc vuông bên trong */
+  background: var(--color-bg);         /* nền xám nhạt */
+  transition: border-color .2s, box-shadow .2s; /* hiệu ứng khi focus */
 }
 
+/* Khi bất kỳ phần tử con nào trong form được focus */
 .search-form:focus-within {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(74,108,247,.15);
+  border-color: var(--color-primary);          /* đổi màu viền thành xanh */
+  box-shadow: 0 0 0 3px rgba(74,108,247,.15);  /* thêm vầng sáng xanh */
 }
 
 .search-form input[type="search"] {
-  flex: 1;
-  border: none;
-  background: transparent;
-  padding: 9px 16px;
-  font-size: .95rem;
-  color: var(--color-text);
-  outline: none;
+  flex: 1;              /* input chiếm hết chiều rộng còn lại */
+  border: none;         /* bỏ viền riêng của input */
+  background: transparent; /* trong suốt, dùng nền của form */
+  padding: 9px 16px;    /* khoảng đệm bên trong */
+  font-size: .95rem;    /* cỡ chữ hơi nhỏ hơn mặc định */
+  color: var(--color-text); /* màu chữ */
+  outline: none;        /* bỏ viền focus mặc định của trình duyệt */
 }
 
 .search-form button {
-  padding: 8px 14px;
-  color: var(--color-muted);
-  display: grid;
-  place-items: center;
-  transition: color .2s;
+  padding: 8px 14px;           /* vùng click đủ rộng */
+  color: var(--color-muted);   /* icon màu xám */
+  display: grid;               /* dùng grid để căn giữa icon */
+  place-items: center;         /* căn giữa cả ngang lẫn dọc */
+  transition: color .2s;       /* hiệu ứng đổi màu khi hover */
 }
 
-.search-form button:hover { color: var(--color-primary); }
+.search-form button:hover { color: var(--color-primary); } /* hover icon đổi thành xanh */
 
 .cart-link {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 40px;
+  position: relative;       /* để badge con có thể dùng position: absolute */
+  display: grid;            /* căn giữa icon giỏ hàng */
+  place-items: center;      /* căn giữa cả ngang lẫn dọc */
+  width: 40px;              /* kích thước nút tròn */
   height: 40px;
-  border-radius: 50%;
-  color: var(--color-text);
-  transition: background .2s;
-  margin-left: auto;
+  border-radius: 50%;       /* hình tròn */
+  color: var(--color-text); /* màu icon */
+  transition: background .2s; /* hiệu ứng nền khi hover */
+  margin-left: auto;        /* đẩy giỏ hàng sang bên phải */
 }
 
-.cart-link:hover { background: var(--color-bg); }
+.cart-link:hover { background: var(--color-bg); } /* hover hiện nền xám nhạt */
 
 .cart-badge {
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  background: var(--color-accent);
-  color: #fff;
-  font-size: .65rem;
-  font-weight: 700;
-  min-width: 18px;
-  height: 18px;
-  border-radius: 9px;
-  display: grid;
+  position: absolute; /* tách khỏi luồng, đặt chồng lên icon */
+  top: 2px;           /* cách mép trên 2px */
+  right: 2px;         /* cách mép phải 2px */
+  background: var(--color-accent); /* nền đỏ */
+  color: #fff;        /* chữ trắng */
+  font-size: .65rem;  /* chữ rất nhỏ */
+  font-weight: 700;   /* đậm */
+  min-width: 18px;    /* đủ rộng cho số 1 chữ số */
+  height: 18px;       /* chiều cao cố định */
+  border-radius: 9px; /* bo tròn (pill khi có 2 chữ số) */
+  display: grid;      /* căn giữa số bên trong */
   place-items: center;
-  padding: 0 4px;
-  line-height: 1;
-  border: 2px solid var(--color-surface);
+  padding: 0 4px;     /* khoảng đệm ngang khi số 2 chữ số */
+  line-height: 1;     /* tránh badge bị cao hơn cần */
+  border: 2px solid var(--color-surface); /* viền trắng tạo tách biệt với icon */
 }
 
 /* ─── Main ───────────────────────────────────────────────────────────────────  */
-main { flex: 1; }
+main { flex: 1; } /* main chiếm hết không gian dọc còn lại, đẩy footer xuống đáy */
 
 .product-section {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 40px 24px;
+  max-width: 1200px; /* giới hạn chiều rộng */
+  margin: 0 auto;    /* căn giữa */
+  padding: 40px 24px; /* trên/dưới 40px, hai bên 24px */
 }
 
 .product-section h1 {
-  font-size: 1.75rem;
-  font-weight: 700;
-  margin-bottom: 28px;
+  font-size: 1.75rem;  /* tiêu đề lớn */
+  font-weight: 700;    /* đậm */
+  margin-bottom: 28px; /* khoảng cách xuống lưới sản phẩm */
   color: var(--color-text);
 }
 
 /* ─── Product grid ───────────────────────────────────────────────────────────  */
 .product-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 24px;
+  display: grid;                                    /* bố cục lưới */
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); /* tự động chia cột: tối thiểu 240px, tối đa 1fr */
+  gap: 24px;                                        /* khoảng cách giữa các thẻ */
 }
 
-/* ── Specificity demo: 5 rules targeting .product-card / article ───────────── *
+/* ── Demo độ ưu tiên (specificity): 5 rule nhắm vào .product-card / article ── *
  *
- *  Specificity ladder (low → high):
+ *  Thang độ ưu tiên (thấp → cao):
  *
- *  1. article            (0,0,1)  — tag selector
- *  2. [data-category]    (0,1,0)  — attribute selector
- *  3. .product-card      (0,1,0)  — class selector  (same as attr, order wins)
- *  4. .product-card:nth-child(odd) (0,2,0) — class + pseudo-class
- *  5. .product-card:hover (0,2,0) — class + pseudo-class  (order > #4)
- *  6. #featured-card     (1,0,0)  — id selector  (beats all above)
+ *  1. article            (0,0,1)  — selector tag
+ *  2. [data-category]    (0,1,0)  — selector thuộc tính
+ *  3. .product-card      (0,1,0)  — selector class (bằng attr, thứ tự viết quyết định)
+ *  4. .product-card:nth-child(odd) (0,2,0) — class + pseudo-class, :nth-child(odd) là pseudo-class chọn các phần tử con ở vị trí lẻ (1, 3, 5, 7…) trong cùng một cha.
+ *  5. .product-card:hover (0,2,0) — class + pseudo-class (thứ tự sau #4)
+ *  6. #featured-card     (1,0,0)  — selector id (thắng tất cả các rule trên)
  *
  * ─────────────────────────────────────────────────────────────────────────── */
 
-/* 1. Tag — paints every article with a shared border */
+/* 1. Tag — áp viền chung cho mọi article */
 article {
-  border: 2px solid var(--color-border);
-  border-radius: var(--radius);
+  border: 2px solid var(--color-border); /* viền mặc định cho mọi article */
+  border-radius: var(--radius);          /* bo góc */
 }
 
-/* 2. Attribute — anything with a data-category attribute gets a shadow */
+/* 2. Thuộc tính — bất kỳ phần tử có data-category đều có bóng */
 [data-category] {
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-sm); /* thêm bóng cho thẻ có thuộc tính data-category */
 }
 
-/* 3. Class — full card layout, overrides the tag's bare border-radius */
+/* 3. Class — layout đầy đủ của thẻ, ghi đè border-radius từ rule tag */
 .product-card {
-  background: var(--color-surface);
-  border-radius: var(--radius);
-  overflow: hidden;
-  display: flex;
+  background: var(--color-surface); /* nền trắng */
+  border-radius: var(--radius);     /* bo góc */
+  overflow: hidden;                 /* cắt ảnh không tràn ra ngoài bo góc */
+  display: flex;                    /* xếp ảnh + nội dung theo chiều dọc */
   flex-direction: column;
-  transition: transform .2s, box-shadow .2s;
+  transition: transform .2s, box-shadow .2s; /* hiệu ứng nâng thẻ khi hover */
 }
 
-/* 4. Pseudo :nth-child(odd) — alternating background tint on odd cards */
+/* 4. Pseudo :nth-child(odd) — thẻ lẻ có màu nền xen kẽ */
 .product-card:nth-child(odd) {
-  background: #fafbff;
+  background: #fafbff; /* thẻ lẻ (1,3,5…) có nền xanh cực nhạt */
 }
 
-/* 5. Pseudo :hover — lift + deeper shadow on hover */
+/* 5. Pseudo :hover — nâng thẻ và tăng bóng khi hover */
 .product-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-hover);
-  border-color: var(--color-primary);
+  transform: translateY(-4px);      /* nâng thẻ lên 4px */
+  box-shadow: var(--shadow-hover);  /* bóng đậm hơn */
+  border-color: var(--color-primary); /* viền đổi thành xanh */
 }
 
-/* 6. ID — featured card gets a gold border, beating all class/tag rules */
+/* 6. ID — thẻ nổi bật có viền xanh, thắng mọi rule class/tag */
 #featured-card {
-  border-color: var(--color-primary);
-  border-width: 2px;
-  background: #f0f4ff;
+  border-color: var(--color-primary); /* viền xanh cho thẻ nổi bật */
+  border-width: 2px;                  /* độ dày viền */
+  background: #f0f4ff;                /* nền xanh nhạt */
 }
 
 /* ─── Card internals ─────────────────────────────────────────────────────────  */
 .card-image-wrap {
-  overflow: hidden;
-  aspect-ratio: 4/3;
-  background: var(--color-bg);
+  overflow: hidden;          /* cắt ảnh khi scale */
+  aspect-ratio: 4/3;         /* tỉ lệ khung ảnh cố định 4:3 */
+  background: var(--color-bg); /* nền xám khi ảnh chưa tải */
 }
 
 .card-image-wrap img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform .3s;
+  width: 100%;             /* ảnh chiếm toàn chiều rộng khung */
+  height: 100%;            /* ảnh chiếm toàn chiều cao khung */
+  object-fit: cover;       /* cắt ảnh để vừa khung, không bị méo */
+  transition: transform .3s; /* hiệu ứng zoom khi hover */
 }
 
+/* Khi hover vào card, ảnh bên trong zoom nhẹ */
 .product-card:hover .card-image-wrap img {
-  transform: scale(1.04);
+  transform: scale(1.04); /* phóng to 4% */
 }
 
 .product-title {
-  font-size: 1rem;
-  font-weight: 600;
-  padding: 14px 16px 4px;
-  line-height: 1.4;
+  font-size: 1rem;          /* cỡ chữ tên sản phẩm */
+  font-weight: 600;         /* hơi đậm */
+  padding: 14px 16px 4px;   /* trên 14px, hai bên 16px, dưới 4px */
+  line-height: 1.4;         /* khoảng cách dòng */
 }
 
 .product-price {
-  font-size: .95rem;
-  font-weight: 700;
-  color: var(--color-primary);
-  padding: 0 16px;
+  font-size: .95rem;             /* cỡ chữ giá */
+  font-weight: 700;              /* đậm */
+  color: var(--color-primary);   /* màu xanh */
+  padding: 0 16px;               /* khoảng cách hai bên */
 }
 
 .btn-add-cart {
-  margin: 12px 16px 16px;
-  padding: 9px 0;
-  background: var(--color-primary);
-  color: #fff;
-  font-size: .875rem;
-  font-weight: 600;
-  border-radius: 6px;
-  text-align: center;
-  transition: opacity .2s;
+  margin: 12px 16px 16px;        /* cách các cạnh card */
+  padding: 9px 0;                /* khoảng đệm trên dưới */
+  background: var(--color-primary); /* nền xanh */
+  color: #fff;                   /* chữ trắng */
+  font-size: .875rem;            /* cỡ chữ nhỏ */
+  font-weight: 600;              /* đậm vừa */
+  border-radius: 6px;            /* bo góc nhẹ */
+  text-align: center;            /* căn giữa chữ */
+  transition: opacity .2s;       /* hiệu ứng mờ khi hover */
 }
 
-.btn-add-cart:hover { opacity: .85; }
+.btn-add-cart:hover { opacity: .85; } /* hover làm mờ nút 15% */
 
 /* ─── Footer ─────────────────────────────────────────────────────────────────  */
 .site-footer {
-  background: var(--color-text);
-  color: #c9ccd6;
-  padding: 32px 24px;
-  margin-top: auto;
+  background: var(--color-text); /* nền tối (dùng màu chữ chính làm nền) */
+  color: #c9ccd6;                /* chữ xám sáng trên nền tối */
+  padding: 32px 24px;            /* khoảng đệm */
+  margin-top: auto;              /* đẩy footer xuống đáy trang */
 }
 
 .footer-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 32px;
+  max-width: 1200px;   /* giới hạn chiều rộng */
+  margin: 0 auto;      /* căn giữa */
+  display: flex;       /* xếp các con theo hàng ngang */
+  flex-wrap: wrap;     /* xuống dòng khi không đủ chỗ */
+  align-items: center; /* căn giữa dọc */
+  gap: 8px 32px;       /* khoảng cách: 8px dọc, 32px ngang */
 }
 
 .footer-brand {
-  font-weight: 700;
+  font-weight: 700; /* tên thương hiệu đậm */
   font-size: 1rem;
-  color: #fff;
+  color: #fff;      /* trắng nổi bật trên nền tối */
 }
 
 .footer-tagline {
-  font-size: .85rem;
-  flex: 1 1 100%;
-  margin-top: -4px;
+  font-size: .85rem;  /* chữ nhỏ */
+  flex: 1 1 100%;     /* flex-grow:1 (phình to) | flex-shrink:1 (thu nhỏ) | flex-basis:100% (chiếm hết hàng → tự xuống dòng riêng) */
+  margin-top: -4px;   /* kéo sát lên tên thương hiệu */
 }
 
 .footer-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 20px;
-  margin-top: 8px;
+  display: flex;   /* các link nằm ngang */
+  flex-wrap: wrap; /* xuống dòng nếu cần */
+  gap: 4px 20px;   /* khoảng cách: 4px dọc, 20px ngang */
+  margin-top: 8px; /* cách phần trên 8px */
 }
 
 .footer-links a {
-  font-size: .875rem;
-  color: #9ca3af;
-  transition: color .2s;
+  font-size: .875rem;    /* chữ nhỏ */
+  color: #9ca3af;        /* xám nhạt */
+  transition: color .2s; /* hiệu ứng đổi màu khi hover */
 }
 
-.footer-links a:hover { color: #fff; }
+.footer-links a:hover { color: #fff; } /* hover link đổi thành trắng */
