@@ -6,6 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ShopLite – Cửa hàng trực tuyến</title>
   <link rel="stylesheet" href="style.css" />
+  <script>tailwind.config = { corePlugins: { preflight: false } }</script>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body>
@@ -88,6 +90,21 @@
           <h2 class="product-title">Sạc dự phòng 20000mAh</h2>
           <p class="product-price">459.000đ</p>
           <button type="button" class="btn-add-cart">Thêm vào giỏ</button>
+        </article>
+
+        <article
+          class="group bg-[var(--color-surface)] rounded-[var(--radius)] overflow-hidden flex flex-col relative transition-[transform,box-shadow] duration-200 odd:bg-[#fafbff] hover:-translate-y-1 hover:shadow-[var(--shadow-hover)] border border-transparent hover:border-[var(--color-primary)]"
+          data-category="electronics">
+          <a href="product.html" class="absolute inset-0 z-10" aria-label="Xem chi tiết Sạc dự phòng 20000mAh"></a>
+          <div class="card-image-wrap overflow-hidden aspect-[4/3] bg-[var(--color-bg)]">
+            <img class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              src="https://placehold.co/300x220/fef8e8/cf9a44?text=Sản+phẩm+5" alt="Sạc dự phòng" />
+          </div>
+          <h2 class="text-base font-semibold pt-3.5 px-4 pb-1 leading-[1.4]">Sạc dự phòng 20000mAh</h2>
+          <p class="text-[0.95rem] font-bold text-[var(--color-primary)] px-4">459.000đ</p>
+          <button type="button"
+            class="mt-auto mx-4 mb-4 relative z-[2] py-[9px] bg-[var(--color-primary)] text-white text-sm font-semibold rounded-md text-center transition-opacity duration-200 hover:opacity-[.85]">Thêm
+            vào giỏ</button>
         </article>
       </div>
     </section>

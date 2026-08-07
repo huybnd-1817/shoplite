@@ -413,6 +413,6 @@ article {
 /* Ghi đè margin auto của card — nút nằm tự nhiên sau mô tả */
 .product-detail-info .btn-add-cart {
   margin: 8px 0 0;
-  padding: 12px 32px;   /* CTA nổi bật hơn card */
+  padding: 12px 32px;
   width: fit-content;   /* nút không kéo dài toàn chiều rộng */
 }
