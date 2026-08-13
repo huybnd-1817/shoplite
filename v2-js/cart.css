@@ -1,0 +1,302 @@
+/* Cart-specific styles — dùng chung CSS variables từ style.css */
+
+/* ─── Layout ─────────────────────────────────────────────────────────────────  */
+.cart-section {
+  max-width: 1200px;  /* giới hạn chiều rộng, căn giữa trang */
+  margin: 0 auto;     /* căn giữa theo chiều ngang */
+  padding: 40px 24px; /* khoảng thở trên-dưới và 2 bên */
+}
+
+.cart-section > h1 { /* chỉ <h1> là con TRỰC TIẾP của .cart-section */
+  font-size: 1.75rem;       /* cỡ chữ tiêu đề trang */
+  font-weight: 700;          /* đậm */
+  margin-bottom: 28px;       /* khoảng cách xuống layout bên dưới */
+  color: var(--color-text);  /* màu chữ chính từ design token */
+}
+
+.cart-count {
+  font-size: 1rem;             /* nhỏ hơn tiêu đề h1 */
+  font-weight: 400;            /* nhẹ hơn tiêu đề, vai trò phụ */
+  color: var(--color-muted);   /* xám — ít nổi bật hơn số đếm */
+  margin-left: 6px;            /* khoảng cách nhỏ sau tiêu đề */
+}
+
+/*
+ * Bố cục 2 cột: cột trái (danh sách) co giãn tự do, cột phải (tổng kết) cố định 340px.
+ * align-items: start — ngăn cột phải kéo dài bằng cột trái khi danh sách dài.
+ * Mobile-first: mặc định 1 cột, chuyển sang 2 cột từ 768px.
+ */
+.cart-layout {
+  display: grid;             /* bật CSS Grid */
+  grid-template-columns: 1fr; /* mobile: 1 cột */
+  gap: 24px;                  /* khoảng cách giữa items panel và summary panel */
+  align-items: start;         /* cột phải không bị kéo dài theo cột trái */
+}
+
+@media (min-width: 768px) {
+  .cart-layout { grid-template-columns: 1fr 340px; } /* desktop: items | summary */
+}
+
+/* ─── Items panel ────────────────────────────────────────────────────────────  */
+.cart-items {
+  background: var(--color-surface);      /* nền trắng / dark tương ứng */
+  border-radius: var(--radius);           /* bo góc đồng bộ toàn site */
+  border: 1px solid var(--color-border);  /* viền nhẹ */
+  overflow: hidden;                       /* cắt bo góc cho hàng đầu/cuối */
+  box-shadow: var(--shadow-sm);           /* đổ bóng nhẹ */
+}
+
+/*
+ * Header cột ẩn trên mobile (không đủ chỗ hiển thị 5 cột).
+ * Hiện từ 640px — cùng breakpoint với lúc .cart-item chuyển sang 5 cột,
+ * đảm bảo header luôn khớp với số cột bên dưới.
+ */
+.cart-items-header {
+  display: none;                          /* ẩn mặc định trên mobile */
+  padding: 10px 20px;                     /* padding nhỏ hơn .cart-item vì chỉ là nhãn cột */
+  background: var(--color-bg);            /* nền xám nhạt phân biệt với hàng dữ liệu */
+  border-bottom: 1px solid var(--color-border); /* đường kẻ ngăn header và list */
+  font-size: .78rem;                      /* nhỏ — nhãn cột không cần nổi bật */
+  font-weight: 600;                       /* đủ đậm để đọc rõ dù cỡ nhỏ */
+  text-transform: uppercase;              /* ALL CAPS cho header bảng */
+  letter-spacing: .05em;                  /* giãn chữ nhẹ — phổ biến với uppercase nhỏ */
+  color: var(--color-muted);              /* xám nhạt — vai trò phụ trợ */
+}
+
+@media (min-width: 640px) {
+  .cart-items-header {
+    display: grid;                                    /* hiện và dùng grid để khớp cột với .cart-item */
+    grid-template-columns: 80px 1fr 130px 110px 44px; /* khớp với .cart-item desktop */
+    gap: 16px;                                        /* khoảng cách cột bằng với .cart-item */
+    align-items: center;                              /* căn giữa theo chiều dọc */
+  }
+}
+
+.cart-list { list-style: none; } /* bỏ dấu chấm đầu dòng mặc định của <ul> */
+
+/*
+ * Layout mobile (< 640px): lưới 3 cột, 2 hàng
+ *
+ *   col→  [72px]   [1fr ]  [44px]
+ *   row1   ảnh      tên     [×]
+ *   row2   ảnh      qty
+ *
+ * Ảnh span 2 hàng (grid-row: 1/3), tên và qty xếp dọc bên phải.
+ * Nút xóa nằm góc trên phải (hàng 1, cột 3).
+ */
+.cart-item {
+  display: grid;                                /* lưới cho từng hàng sản phẩm */
+  grid-template-columns: 72px 1fr 44px;         /* mobile: ảnh | nội dung | nút xóa */
+  grid-template-rows: auto auto;                /* 2 hàng: tên / qty */
+  gap: 8px 12px;                                /* row-gap 8px, column-gap 12px */
+  align-items: center;                          /* căn giữa các ô theo chiều dọc */
+  padding: 14px 16px;                           /* padding hàng sản phẩm mobile */
+  border-bottom: 1px solid var(--color-border); /* đường kẻ ngăn các hàng */
+  transition: background .15s;                  /* hover highlight mượt */
+}
+
+.cart-item:last-child { border-bottom: none; }     /* hàng cuối không cần đường kẻ */
+.cart-item:hover { background: var(--color-bg); }  /* hover highlight nhẹ */
+
+/*
+ * Layout desktop (≥ 640px): lưới 5 cột, 1 hàng
+ *   [80px] [1fr] [130px] [110px] [44px]
+ *    ảnh    tên   qty     total   xóa
+ */
+@media (min-width: 640px) {
+  .cart-item {
+    grid-template-columns: 80px 1fr 130px 110px 44px; /* 5 cột desktop */
+    grid-template-rows: 1fr;  /* về 1 hàng, bỏ layout 2 hàng của mobile */
+    gap: 16px;                /* cột rộng hơn, gap lớn hơn */
+    padding: 16px 20px;       /* padding lớn hơn trên desktop */
+  }
+}
+
+.item-img {
+  width: 72px;                 /* chiều rộng ảnh mobile — khớp với cột đầu */
+  height: 54px;                /* tỉ lệ 4:3 */
+  object-fit: cover;           /* cắt ảnh vừa khung, không méo */
+  border-radius: 6px;          /* bo góc nhẹ */
+  background: var(--color-bg); /* nền xám khi ảnh chưa tải */
+  grid-row: 1 / 3;             /* span 2 hàng để ảnh cao bằng tên + qty trên mobile */
+}
+
+@media (min-width: 640px) {
+  .item-img { width: 80px; height: 60px; grid-row: auto; } /* desktop: về 1 hàng bình thường */
+}
+
+/*
+ * min-width: 0 — bắt buộc khi phần tử là grid/flex item chứa text bị truncate.
+ * Mặc định grid item có min-width: auto, nghĩa là không bao giờ nhỏ hơn nội dung bên trong.
+ * Nếu thiếu dòng này, text-overflow: ellipsis trên .item-name sẽ không hoạt động.
+ */
+.item-info { min-width: 0; } /* cho phép cột co lại để ellipsis hoạt động */
+
+.item-name {
+  font-size: .95rem;         /* hơi nhỏ hơn body mặc định */
+  font-weight: 600;          /* semi-bold — nổi bật hơn giá phụ */
+  line-height: 1.4;          /* giãn dòng vừa đủ nếu tên dài 2 dòng */
+  overflow: hidden;          /* cắt text tràn */
+  text-overflow: ellipsis;   /* hiện "…" thay vì cắt đứng */
+  white-space: nowrap;       /* không xuống dòng — bắt buộc để ellipsis hoạt động */
+  color: var(--color-text);  /* màu chữ chính */
+}
+
+.item-unit-price { font-size: .82rem; color: var(--color-muted); margin-top: 3px; } /* giá đơn vị — nhỏ và xám, vai trò phụ */
+
+/*
+ * Trên mobile: qty được đặt vào hàng 2, cột 2 (dưới tên sản phẩm).
+ * grid-column/row tường minh vì layout 2 hàng cần chỉ định rõ vị trí.
+ * Desktop: reset về auto — grid 1 hàng tự sắp xếp theo thứ tự DOM.
+ */
+.item-qty {
+  display: flex;       /* flex cho hàng − input + */
+  align-items: center; /* căn giữa nút và input theo chiều dọc */
+  gap: 4px;            /* khoảng cách giữa nút − / input / nút + */
+  grid-column: 2;      /* cột 2 (bên phải ảnh) */
+  grid-row: 2;         /* hàng 2 (dưới tên) — chỉ có ý nghĩa trên mobile */
+}
+
+@media (min-width: 640px) { .item-qty { grid-column: auto; grid-row: auto; } } /* desktop: tự sắp theo DOM */
+
+/* ─── Qty controls ───────────────────────────────────────────────────────────  */
+.qty-btn {
+  width: 28px; height: 28px;              /* kích thước nút vuông nhỏ */
+  border-radius: 6px;                      /* bo góc */
+  border: 1px solid var(--color-border);  /* viền nhạt mặc định */
+  background: var(--color-surface);       /* nền trắng */
+  color: var(--color-text);               /* màu ký tự − / + */
+  font-size: .9rem;                        /* cỡ ký tự vừa phải */
+  display: grid; place-items: center;     /* căn giữa ký tự − / + */
+  cursor: pointer;                         /* con trỏ tay */
+  transition: background .15s, border-color .15s, color .15s; /* hover mượt */
+}
+
+/* hover: nền đặc màu primary, chữ trắng — tương tự btn-add-cart nhưng nhỏ hơn */
+.qty-btn:hover { background: var(--color-primary); border-color: var(--color-primary); color: #fff; }
+
+.qty-input {
+  width: 40px; height: 28px;              /* chiều rộng đủ cho 2 chữ số */
+  border: 1px solid var(--color-border);  /* viền nhạt */
+  border-radius: 6px;                      /* bo góc đồng bộ với .qty-btn */
+  text-align: center;                      /* số căn giữa */
+  font-size: .85rem;                       /* nhỏ hơn body một chút */
+  font-family: inherit;                    /* kế thừa font của trang, tránh font mặc định của input */
+  background: var(--color-bg);            /* nền xám nhạt phân biệt với nút */
+  color: var(--color-text);               /* màu chữ chính */
+  outline: none;                           /* bỏ outline mặc định — focus được xử lý bằng box-shadow bên dưới */
+  transition: border-color .15s, box-shadow .15s; /* focus mượt */
+}
+
+/* focus: viền xanh + vầng sáng — đồng bộ với search-form:focus-within trong style.css */
+.qty-input:focus {
+  border-color: var(--color-primary);              /* viền xanh khi focus */
+  box-shadow: 0 0 0 3px var(--color-primary-ring); /* vầng sáng xanh mờ */
+}
+
+/* Thành tiền (= đơn giá × số lượng) — ẩn trên mobile vì không đủ cột hiển thị */
+.item-total {
+  font-size: .9rem;             /* cùng cỡ body nhỏ */
+  font-weight: 700;             /* đậm — số tiền quan trọng */
+  color: var(--color-primary);  /* màu xanh nổi bật như .product-price */
+  text-align: right;            /* căn phải cho cột số tiền */
+  white-space: nowrap;          /* giá tiền không xuống dòng */
+  display: none;                /* ẩn mặc định */
+}
+
+@media (min-width: 640px) { .item-total { display: block; } } /* hiện từ 640px */
+
+/*
+ * align-self: start — nút xóa căn lên trên cùng hàng.
+ * Quan trọng trên mobile khi hàng cao 2 dòng (tên + qty):
+ * nếu không có, nút sẽ bị căn giữa chiều cao hàng, trông lệch.
+ */
+.btn-remove {
+  width: 32px; height: 32px;              /* vùng bấm đủ lớn (touch target ≥ 24px) */
+  display: grid; place-items: center;     /* căn giữa icon X */
+  border-radius: 6px;                      /* bo góc */
+  color: var(--color-muted);              /* icon xám mặc định — không gây chú ý thừa */
+  cursor: pointer;                         /* con trỏ tay */
+  transition: background .15s, color .15s; /* hover mượt */
+  align-self: start;                       /* căn lên đầu hàng, không căn giữa */
+}
+
+/*
+ * hover: nền đỏ mờ + icon đỏ.
+ * Dùng rgba thay vì var(--color-accent) cho background vì cần opacity thấp (10%).
+ * Dark mode override: tăng opacity lên 12% vì nền tối hơn, cần đậm hơn để thấy.
+ */
+.btn-remove:hover { background: rgba(239,68,68,.10); color: var(--color-accent); } /* nền đỏ mờ + icon đỏ */
+[data-theme="dark"] .btn-remove:hover { background: rgba(248,113,113,.12); } /* dark: tăng opacity */
+
+/* ─── Summary panel ──────────────────────────────────────────────────────────  */
+/*
+ * position: sticky; top: 80px — khối tổng kết dính theo khi cuộn trang.
+ * 80px = chiều cao header (64px) + khoảng thở (16px), tránh bị header che.
+ * Chỉ hoạt động khi chiều cao danh sách > chiều cao summary (desktop).
+ */
+.cart-summary {
+  background: var(--color-surface);      /* nền trắng / dark */
+  border-radius: var(--radius);           /* bo góc đồng bộ */
+  border: 1px solid var(--color-border);  /* viền nhẹ */
+  padding: 24px;                          /* khoảng thở bên trong */
+  box-shadow: var(--shadow-sm);           /* đổ bóng nhẹ */
+  position: sticky;                       /* dính theo khi cuộn */
+  top: 80px;                              /* cách header 16px */
+}
+
+.cart-summary h2 { font-size: 1.05rem; font-weight: 700; margin-bottom: 20px; color: var(--color-text); } /* tiêu đề khối tổng kết */
+
+.summary-rows { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; } /* stack các dòng tạm tính / phí ship / tổng */
+
+/*
+ * align-items: baseline — căn theo đường cơ sở chữ.
+ * Dùng thay vì center vì cột phải (giá) có font-size lớn hơn (.summary-total),
+ * baseline giữ cho 2 cột trông cân bằng thị giác dù khác cỡ chữ.
+ */
+.summary-row {
+  display: flex;                   /* 2 cột: nhãn | giá trị */
+  justify-content: space-between;  /* đẩy nhãn và giá về 2 đầu */
+  align-items: baseline;           /* căn đường cơ sở chữ thay vì căn giữa */
+  font-size: .9rem;                /* nhỏ hơn body một chút */
+  color: var(--color-muted);       /* xám — vai trò phụ */
+}
+
+.summary-divider { border: none; border-top: 1px solid var(--color-border); margin: 4px 0; } /* đường kẻ mảnh trước dòng tổng cộng */
+
+.summary-total { font-size: 1rem; font-weight: 700; color: var(--color-text); } /* dòng tổng cộng — đậm hơn các dòng trên */
+.summary-total span:last-child { color: var(--color-primary); font-size: 1.1rem; } /* giá to hơn, màu xanh */
+
+/*
+ * Màu xanh lá cố định — không dùng CSS variable vì đây là màu mang ý nghĩa ngữ nghĩa
+ * ("miễn phí" = tích cực = xanh lá), không phải màu giao diện.
+ * Dark mode: đổi sang xanh sáng hơn (#4ade80) vì #16a34a quá tối trên nền dark.
+ */
+.free-ship { color: #16a34a; font-weight: 600; font-size: .88rem; } /* xanh lá — nghĩa "tốt / miễn phí" */
+[data-theme="dark"] .free-ship { color: #4ade80; } /* dark: xanh sáng hơn cho đủ tương phản */
+
+.btn-checkout {
+  width: 100%;                    /* nút full width trong summary */
+  padding: 13px;                  /* padding dọc thoải mái, dễ bấm */
+  background: var(--color-primary); /* nền xanh chủ đạo */
+  color: #fff;                    /* chữ trắng trên nền xanh */
+  font-size: 1rem;                /* cỡ chữ body tiêu chuẩn */
+  font-weight: 700;               /* đậm — CTA quan trọng nhất trang */
+  border-radius: var(--radius);   /* bo góc đồng bộ */
+  cursor: pointer;                 /* con trỏ tay */
+  font-family: inherit;           /* tránh font mặc định của button */
+  transition: opacity .2s, box-shadow .2s, transform .1s; /* hover/active mượt */
+}
+
+/* hover: nâng nhẹ lên 1px, đổ bóng — hiệu ứng "nhấc lên" trước khi click */
+.btn-checkout:hover { opacity: .9; box-shadow: var(--shadow-hover); transform: translateY(-1px); }
+/* active: reset transform — nút "nhún xuống" khi bấm, phản hồi vật lý */
+.btn-checkout:active { transform: translateY(0); }
+
+/* ─── Responsive fine-tune ───────────────────────────────────────────────────  */
+/* Màn cực hẹp (≤ 360px): giảm padding để nội dung không bị chèn ép */
+@media (max-width: 360px) {
+  .cart-section { padding: 20px 14px; }  /* thu hẹp padding trang */
+  .cart-item { padding: 12px 14px; }     /* thu hẹp padding hàng sản phẩm */
+  .cart-summary { padding: 20px 16px; }  /* thu hẹp padding summary panel */
+}
